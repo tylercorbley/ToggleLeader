@@ -21,7 +21,7 @@ namespace ToggleLeader
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // this is a variable for the Revit application
-            UIApplication uiapp = commandData.Application;
+            //UIApplication uiapp = commandData.Application;
 
             // this is a variable for the current Revit model
             //Document doc = uiapp.ActiveUIDocument.Document;
@@ -33,35 +33,34 @@ namespace ToggleLeader
 
             try
             {
-                // Get the currently selected element
-                ElementId selectedElementId = uiDoc.Selection.GetElementIds().FirstOrDefault();
-                if (selectedElementId == null)
+                // Get the currently selected room tags
+                IList<ElementId> selectedElementIds = (IList<ElementId>)uiDoc.Selection.GetElementIds();
+                if (selectedElementIds.Count == 0)
                 {
-                    TaskDialog.Show("Error", "Please select a room tag.");
+                    TaskDialog.Show("Error", "Please select one or more room tags.");
                     return Result.Cancelled;
                 }
 
-                Element selectedElement = doc.GetElement(selectedElementId);
-                RoomTag selectedTag = selectedElement as RoomTag;
-
-                if (selectedTag == null)
+                using (TransactionGroup txGroup = new TransactionGroup(doc, "Toggle Room Tag Leader"))
                 {
-                    TaskDialog.Show("Error", "The selected element is not a room tag.");
-                    return Result.Cancelled;
+                    txGroup.Start();
+
+                    foreach (ElementId selectedElementId in selectedElementIds)
+                    {
+                        Element selectedElement = doc.GetElement(selectedElementId);
+                        RoomTag selectedTag = selectedElement as RoomTag;
+
+                        if (selectedTag != null)
+                        {
+                            // Toggle the Leader parameter for each selected room tag
+                                bool leaderVisible = selectedTag.HasLeader;
+                                selectedTag.HasLeader = !leaderVisible;
+                        }
+                    }
+
+                    txGroup.Assimilate();
                 }
 
-                // Toggle the Leader parameter
-                using (Transaction tx = new Transaction(doc, "Toggle Room Tag Leader"))
-                {
-                    tx.Start();
-
-                    bool leaderVisible = selectedTag.HasLeader;
-                    selectedTag.HasLeader = !leaderVisible;
-
-                    tx.Commit();
-                }
-
-               // TaskDialog.Show("Success", "Room tag leader toggled successfully.");
                 return Result.Succeeded;
             }
             catch (Exception ex)
