@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>ToggleLeader</Text>
+    <Description>Some description for ToggleLeader</Description>
+    <Assembly>ToggleLeader.dll</Assembly>
+    <FullClassName>ToggleLeader.ToggleLeader</FullClassName>
+    <ClientId>d867a16c-2399-4093-8e46-880cea4b4b25</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+    <AddIn Type="Application">
+    <Name>ToggleLeader</Name>
+    <Assembly>ToggleLeader.dll</Assembly>
+    <FullClassName>ToggleLeader.App</FullClassName>
+    <ClientId>19842cf6-fa92-4385-b698-6783023a2f6e</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+</RevitAddIns>
